@@ -6,7 +6,7 @@ const Footer = () => {
       <div className="container mx-auto px-6">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="font-serif text-2xl font-bold text-primary">
-            Jamuna Beauty
+            Sri's Beauty Parlour
           </div>
 
           <div className="flex items-center gap-6">
@@ -38,7 +38,7 @@ const Footer = () => {
           </div>
 
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Jamuna Beauty Parlour. All rights reserved.
+            © {new Date().getFullYear()} Sri's Beauty Parlour. All rights reserved.
           </p>
         </div>
       </div>
