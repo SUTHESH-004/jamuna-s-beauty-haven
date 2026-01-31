@@ -22,7 +22,7 @@ const HeroSection = () => {
             Welcome to
           </p>
           <h1 className="font-serif text-5xl md:text-7xl font-bold text-foreground mb-6 leading-tight">
-            Jamuna
+            Sri's
             <span className="block text-primary">Beauty Parlour</span>
           </h1>
           <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
