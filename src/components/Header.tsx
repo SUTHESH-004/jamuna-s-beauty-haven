@@ -1,6 +1,21 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/useAuth";
+import AuthDialog from "@/components/auth/AuthDialog";
+import { User, LogOut, LayoutDashboard } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Header = () => {
+  const navigate = useNavigate();
+  const { user, isOwner, signOut, isLoading } = useAuth();
+  const [authDialogOpen, setAuthDialogOpen] = useState(false);
+
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     element?.scrollIntoView({ behavior: "smooth" });
@@ -26,17 +41,50 @@ const Header = () => {
             Services
           </button>
           <button
-            onClick={() => scrollToSection("portfolio")}
+            onClick={() => scrollToSection("testimonials")}
             className="text-foreground/80 hover:text-primary transition-colors"
           >
-            Portfolio
+            Reviews
           </button>
-          <Button
+          <button
             onClick={() => scrollToSection("contact")}
-            size="sm"
+            className="text-foreground/80 hover:text-primary transition-colors"
           >
-            Contact Us
-          </Button>
+            Contact
+          </button>
+
+          {/* Auth Section */}
+          {!isLoading && (
+            <>
+              {user ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="sm" className="gap-2">
+                      <User className="w-4 h-4" />
+                      {isOwner ? "Owner" : "Account"}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    {isOwner && (
+                      <DropdownMenuItem onClick={() => navigate("/dashboard")}>
+                        <LayoutDashboard className="w-4 h-4 mr-2" />
+                        Dashboard
+                      </DropdownMenuItem>
+                    )}
+                    <DropdownMenuItem onClick={signOut}>
+                      <LogOut className="w-4 h-4 mr-2" />
+                      Sign Out
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <AuthDialog 
+                  open={authDialogOpen} 
+                  onOpenChange={setAuthDialogOpen}
+                />
+              )}
+            </>
+          )}
         </nav>
       </div>
     </header>
