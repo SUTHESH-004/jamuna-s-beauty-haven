@@ -8,6 +8,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Table,
   TableBody,
   TableCell,
@@ -33,6 +40,24 @@ import {
   Phone,
   Calendar,
 } from "lucide-react";
+
+const PREDEFINED_SERVICES = [
+  "Haircut",
+  "Hair Coloring",
+  "Hair Straightening",
+  "Hair Spa",
+  "Facial",
+  "Cleanup",
+  "Threading",
+  "Waxing",
+  "Manicure",
+  "Pedicure",
+  "Bridal Makeup",
+  "Party Makeup",
+  "Mehendi",
+  "Head Massage",
+  "Other",
+];
 
 interface Customer {
   id: string;
@@ -247,16 +272,44 @@ const OwnerDashboard = () => {
                             <div className="space-y-4">
                               <Label>Services</Label>
                               {billItems.map((item, index) => (
-                                <div key={index} className="flex gap-2">
-                                  <Input
-                                    placeholder="Service name"
-                                    value={item.service}
-                                    onChange={(e) => handleBillItemChange(index, "service", e.target.value)}
-                                    className="flex-1"
-                                  />
+                                <div key={index} className="flex gap-2 items-start">
+                                  <div className="flex-1 space-y-1">
+                                    <Select
+                                      value={PREDEFINED_SERVICES.includes(item.service) ? item.service : item.service ? "Other" : ""}
+                                      onValueChange={(val) => {
+                                        if (val === "Other") {
+                                          handleBillItemChange(index, "service", "");
+                                        } else {
+                                          handleBillItemChange(index, "service", val);
+                                        }
+                                      }}
+                                    >
+                                      <SelectTrigger>
+                                        <SelectValue placeholder="Select service" />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        {PREDEFINED_SERVICES.map((s) => (
+                                          <SelectItem key={s} value={s}>{s}</SelectItem>
+                                        ))}
+                                      </SelectContent>
+                                    </Select>
+                                    {!PREDEFINED_SERVICES.includes(item.service) && item.service !== "" && (
+                                      <Input
+                                        placeholder="Custom service name"
+                                        value={item.service}
+                                        onChange={(e) => handleBillItemChange(index, "service", e.target.value)}
+                                      />
+                                    )}
+                                    {PREDEFINED_SERVICES.includes("Other") && !PREDEFINED_SERVICES.includes(item.service) && item.service === "" && (
+                                      <Input
+                                        placeholder="Enter custom service name"
+                                        onChange={(e) => handleBillItemChange(index, "service", e.target.value)}
+                                      />
+                                    )}
+                                  </div>
                                   <Input
                                     type="number"
-                                    placeholder="Amount"
+                                    placeholder="₹ Amount"
                                     value={item.amount || ""}
                                     onChange={(e) => handleBillItemChange(index, "amount", parseFloat(e.target.value) || 0)}
                                     className="w-28"
@@ -266,6 +319,7 @@ const OwnerDashboard = () => {
                                       variant="ghost"
                                       size="icon"
                                       onClick={() => handleRemoveBillItem(index)}
+                                      className="mt-1"
                                     >
                                       <Trash2 className="w-4 h-4 text-destructive" />
                                     </Button>

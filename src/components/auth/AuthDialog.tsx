@@ -4,7 +4,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import PhoneAuth from "./PhoneAuth";
+import EmailAuth from "./EmailAuth";
 import { User } from "lucide-react";
 
 interface AuthDialogProps {
@@ -25,7 +25,7 @@ const AuthDialog = ({ trigger, open, onOpenChange }: AuthDialogProps) => {
         )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
-        <PhoneAuth onSuccess={() => onOpenChange?.(false)} />
+        <EmailAuth onSuccess={() => onOpenChange?.(false)} />
       </DialogContent>
     </Dialog>
   );
