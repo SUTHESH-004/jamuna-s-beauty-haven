@@ -25,20 +25,25 @@ import {
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { 
-  Users, 
-  Receipt, 
-  ArrowLeft, 
-  Plus, 
-  Trash2, 
+import jsPDF from "jspdf";
+import {
+  Users,
+  Receipt,
+  ArrowLeft,
+  Plus,
+  Trash2,
   Loader2,
   Phone,
   Calendar,
+  Pencil,
+  Download,
+  UserPlus,
 } from "lucide-react";
 
 const PREDEFINED_SERVICES = [
@@ -61,7 +66,7 @@ const PREDEFINED_SERVICES = [
 
 interface Customer {
   id: string;
-  user_id: string;
+  user_id: string | null;
   name: string | null;
   phone: string;
   email: string | null;
@@ -94,6 +99,19 @@ const OwnerDashboard = () => {
   const [billItems, setBillItems] = useState<BillItem[]>([{ service: "", amount: 0 }]);
   const [billNotes, setBillNotes] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+
+  // Add customer state
+  const [addCustomerOpen, setAddCustomerOpen] = useState(false);
+  const [newCustomerName, setNewCustomerName] = useState("");
+  const [newCustomerPhone, setNewCustomerPhone] = useState("");
+  const [newCustomerEmail, setNewCustomerEmail] = useState("");
+  const [isAddingCustomer, setIsAddingCustomer] = useState(false);
+
+  // Edit customer state
+  const [editCustomerId, setEditCustomerId] = useState<string | null>(null);
+  const [editCustomerName, setEditCustomerName] = useState("");
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [isEditingCustomer, setIsEditingCustomer] = useState(false);
 
   useEffect(() => {
     if (!authLoading && (!user || !isOwner)) {
@@ -138,6 +156,56 @@ const OwnerDashboard = () => {
     }
   };
 
+  // Add customer
+  const handleAddCustomer = async () => {
+    if (!newCustomerPhone.trim()) {
+      toast.error("Phone number is required");
+      return;
+    }
+    setIsAddingCustomer(true);
+    try {
+      const { error } = await supabase.from("customers").insert([{
+        name: newCustomerName.trim() || null,
+        phone: newCustomerPhone.trim(),
+        email: newCustomerEmail.trim() || null,
+      }]);
+      if (error) throw error;
+      toast.success("Customer added!");
+      setAddCustomerOpen(false);
+      setNewCustomerName("");
+      setNewCustomerPhone("");
+      setNewCustomerEmail("");
+      fetchCustomers();
+    } catch (error: any) {
+      toast.error(error.message || "Failed to add customer");
+    } finally {
+      setIsAddingCustomer(false);
+    }
+  };
+
+  // Edit customer name
+  const handleEditCustomer = async () => {
+    if (!editCustomerId) return;
+    setIsEditingCustomer(true);
+    try {
+      const { error } = await supabase
+        .from("customers")
+        .update({ name: editCustomerName.trim() || null })
+        .eq("id", editCustomerId);
+      if (error) throw error;
+      toast.success("Customer updated!");
+      setEditDialogOpen(false);
+      setEditCustomerId(null);
+      setEditCustomerName("");
+      fetchCustomers();
+    } catch (error: any) {
+      toast.error(error.message || "Failed to update customer");
+    } finally {
+      setIsEditingCustomer(false);
+    }
+  };
+
+  // Bill helpers
   const handleAddBillItem = () => {
     setBillItems([...billItems, { service: "", amount: 0 }]);
   };
@@ -189,6 +257,89 @@ const OwnerDashboard = () => {
     }
   };
 
+  // Download bill as PDF
+  const handleDownloadBill = (bill: Bill) => {
+    const customer = customers.find(c => c.id === bill.customer_id);
+    const doc = new jsPDF();
+
+    // Header
+    doc.setFontSize(22);
+    doc.setFont("helvetica", "bold");
+    doc.text("Sri's Beauty Parlour", 105, 20, { align: "center" });
+
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "normal");
+    doc.text("Invoice / Bill", 105, 28, { align: "center" });
+
+    // Divider
+    doc.setDrawColor(200, 150, 180);
+    doc.setLineWidth(0.5);
+    doc.line(20, 33, 190, 33);
+
+    // Bill info
+    doc.setFontSize(11);
+    doc.setFont("helvetica", "bold");
+    doc.text("Customer:", 20, 42);
+    doc.setFont("helvetica", "normal");
+    doc.text(customer?.name || customer?.phone || "Unknown", 55, 42);
+
+    doc.setFont("helvetica", "bold");
+    doc.text("Phone:", 20, 50);
+    doc.setFont("helvetica", "normal");
+    doc.text(customer?.phone || "—", 55, 50);
+
+    doc.setFont("helvetica", "bold");
+    doc.text("Date:", 130, 42);
+    doc.setFont("helvetica", "normal");
+    doc.text(new Date(bill.bill_date).toLocaleDateString(), 150, 42);
+
+    // Table header
+    let y = 65;
+    doc.setFillColor(245, 230, 240);
+    doc.rect(20, y - 6, 170, 10, "F");
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(11);
+    doc.text("#", 25, y);
+    doc.text("Service", 35, y);
+    doc.text("Amount (₹)", 160, y, { align: "right" });
+
+    // Table rows
+    doc.setFont("helvetica", "normal");
+    y += 10;
+    bill.items.forEach((item, i) => {
+      doc.text(`${i + 1}`, 25, y);
+      doc.text(item.service, 35, y);
+      doc.text(`₹${Number(item.amount).toLocaleString()}`, 160, y, { align: "right" });
+      y += 8;
+    });
+
+    // Total
+    y += 4;
+    doc.setDrawColor(200, 150, 180);
+    doc.line(20, y - 4, 190, y - 4);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(13);
+    doc.text("Total:", 120, y + 2);
+    doc.text(`₹${Number(bill.total_amount).toLocaleString()}`, 160, y + 2, { align: "right" });
+
+    // Notes
+    if (bill.notes) {
+      y += 16;
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "italic");
+      doc.text(`Notes: ${bill.notes}`, 20, y);
+    }
+
+    // Footer
+    doc.setFontSize(9);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(150);
+    doc.text("Thank you for choosing Sri's Beauty Parlour!", 105, 280, { align: "center" });
+
+    const fileName = `bill-${customer?.name || customer?.phone || "customer"}-${new Date(bill.bill_date).toISOString().slice(0, 10)}.pdf`;
+    doc.save(fileName);
+  };
+
   if (authLoading || isLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -207,20 +358,78 @@ const OwnerDashboard = () => {
       <header className="bg-card border-b border-border sticky top-0 z-50">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => navigate("/")}
-            >
+            <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
               <ArrowLeft className="w-5 h-5" />
             </Button>
             <h1 className="font-serif text-2xl font-bold text-foreground">
               Owner Dashboard
             </h1>
           </div>
-          <div className="flex items-center gap-2 text-muted-foreground">
-            <Users className="w-5 h-5" />
-            <span>{customers.length} Customers</span>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <Users className="w-5 h-5" />
+              <span>{customers.length} Customers</span>
+            </div>
+
+            {/* Add Customer Button */}
+            <Dialog open={addCustomerOpen} onOpenChange={setAddCustomerOpen}>
+              <DialogTrigger asChild>
+                <Button size="sm" className="gap-2">
+                  <UserPlus className="w-4 h-4" />
+                  Add Customer
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                  <DialogTitle className="font-serif">Add New Customer</DialogTitle>
+                  <DialogDescription>Enter customer details below.</DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4 py-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="cust-name">Name</Label>
+                    <Input
+                      id="cust-name"
+                      placeholder="Customer name"
+                      value={newCustomerName}
+                      onChange={(e) => setNewCustomerName(e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="cust-phone">Phone *</Label>
+                    <Input
+                      id="cust-phone"
+                      placeholder="Phone number"
+                      value={newCustomerPhone}
+                      onChange={(e) => setNewCustomerPhone(e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="cust-email">Email</Label>
+                    <Input
+                      id="cust-email"
+                      type="email"
+                      placeholder="Email (optional)"
+                      value={newCustomerEmail}
+                      onChange={(e) => setNewCustomerEmail(e.target.value)}
+                    />
+                  </div>
+                  <Button
+                    onClick={handleAddCustomer}
+                    disabled={isAddingCustomer}
+                    className="w-full gap-2"
+                  >
+                    {isAddingCustomer ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <>
+                        <UserPlus className="w-4 h-4" />
+                        Add Customer
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
       </header>
@@ -238,7 +447,7 @@ const OwnerDashboard = () => {
           {customers.length === 0 ? (
             <div className="p-12 text-center text-muted-foreground">
               <Users className="w-12 h-12 mx-auto mb-4 opacity-50" />
-              <p>No customers have signed up yet.</p>
+              <p>No customers yet. Add one above!</p>
             </div>
           ) : (
             <Table>
@@ -254,7 +463,21 @@ const OwnerDashboard = () => {
                 {customers.map((customer) => (
                   <TableRow key={customer.id}>
                     <TableCell className="font-medium">
-                      {customer.name || "—"}
+                      <div className="flex items-center gap-2">
+                        {customer.name || "—"}
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-6 w-6"
+                          onClick={() => {
+                            setEditCustomerId(customer.id);
+                            setEditCustomerName(customer.name || "");
+                            setEditDialogOpen(true);
+                          }}
+                        >
+                          <Pencil className="w-3 h-3 text-muted-foreground" />
+                        </Button>
+                      </div>
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
@@ -292,10 +515,10 @@ const OwnerDashboard = () => {
                             <DialogTitle className="font-serif">
                               Generate Bill for {customer.name || customer.phone}
                             </DialogTitle>
+                            <DialogDescription>Add services and amounts below.</DialogDescription>
                           </DialogHeader>
-                          
+
                           <div className="space-y-6 py-4">
-                            {/* Bill Items */}
                             <div className="space-y-4">
                               <Label>Services</Label>
                               {billItems.map((item, index) => (
@@ -327,7 +550,7 @@ const OwnerDashboard = () => {
                                         onChange={(e) => handleBillItemChange(index, "service", e.target.value)}
                                       />
                                     )}
-                                    {PREDEFINED_SERVICES.includes("Other") && !PREDEFINED_SERVICES.includes(item.service) && item.service === "" && (
+                                    {!PREDEFINED_SERVICES.includes(item.service) && item.service === "" && (
                                       <Input
                                         placeholder="Enter custom service name"
                                         onChange={(e) => handleBillItemChange(index, "service", e.target.value)}
@@ -353,18 +576,12 @@ const OwnerDashboard = () => {
                                   )}
                                 </div>
                               ))}
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={handleAddBillItem}
-                                className="gap-2"
-                              >
+                              <Button variant="outline" size="sm" onClick={handleAddBillItem} className="gap-2">
                                 <Plus className="w-4 h-4" />
                                 Add Service
                               </Button>
                             </div>
 
-                            {/* Notes */}
                             <div className="space-y-2">
                               <Label htmlFor="notes">Notes (Optional)</Label>
                               <Textarea
@@ -375,7 +592,6 @@ const OwnerDashboard = () => {
                               />
                             </div>
 
-                            {/* Total */}
                             <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
                               <span className="font-medium">Total Amount</span>
                               <span className="font-serif text-2xl font-bold text-primary">
@@ -383,12 +599,7 @@ const OwnerDashboard = () => {
                               </span>
                             </div>
 
-                            {/* Actions */}
-                            <Button
-                              onClick={handleGenerateBill}
-                              disabled={isSaving}
-                              className="w-full gap-2"
-                            >
+                            <Button onClick={handleGenerateBill} disabled={isSaving} className="w-full gap-2">
                               {isSaving ? (
                                 <Loader2 className="w-4 h-4 animate-spin" />
                               ) : (
@@ -432,6 +643,7 @@ const OwnerDashboard = () => {
                   <TableHead>Services</TableHead>
                   <TableHead>Notes</TableHead>
                   <TableHead className="text-right">Total</TableHead>
+                  <TableHead className="text-right">PDF</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -463,6 +675,16 @@ const OwnerDashboard = () => {
                       <TableCell className="text-right font-serif font-bold text-primary">
                         ₹{Number(bill.total_amount).toLocaleString()}
                       </TableCell>
+                      <TableCell className="text-right">
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          onClick={() => handleDownloadBill(bill)}
+                          title="Download PDF"
+                        >
+                          <Download className="w-4 h-4" />
+                        </Button>
+                      </TableCell>
                     </TableRow>
                   );
                 })}
@@ -471,6 +693,47 @@ const OwnerDashboard = () => {
           )}
         </div>
       </main>
+
+      {/* Edit Customer Name Dialog */}
+      <Dialog open={editDialogOpen} onOpenChange={(open) => {
+        setEditDialogOpen(open);
+        if (!open) {
+          setEditCustomerId(null);
+          setEditCustomerName("");
+        }
+      }}>
+        <DialogContent className="sm:max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="font-serif">Edit Customer Name</DialogTitle>
+            <DialogDescription>Update the customer's name below.</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="edit-name">Name</Label>
+              <Input
+                id="edit-name"
+                placeholder="Customer name"
+                value={editCustomerName}
+                onChange={(e) => setEditCustomerName(e.target.value)}
+              />
+            </div>
+            <Button
+              onClick={handleEditCustomer}
+              disabled={isEditingCustomer}
+              className="w-full gap-2"
+            >
+              {isEditingCustomer ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <>
+                  <Pencil className="w-4 h-4" />
+                  Save
+                </>
+              )}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
