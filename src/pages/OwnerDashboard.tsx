@@ -94,7 +94,6 @@ const OwnerDashboard = () => {
   const [billItems, setBillItems] = useState<BillItem[]>([{ service: "", amount: 0 }]);
   const [billNotes, setBillNotes] = useState("");
   const [isSaving, setIsSaving] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     if (!authLoading && (!user || !isOwner)) {
