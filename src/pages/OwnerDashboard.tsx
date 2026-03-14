@@ -73,6 +73,16 @@ interface BillItem {
   amount: number;
 }
 
+interface Bill {
+  id: string;
+  customer_id: string;
+  items: BillItem[];
+  total_amount: number;
+  notes: string | null;
+  bill_date: string;
+  created_at: string;
+}
+
 const OwnerDashboard = () => {
   const navigate = useNavigate();
   const { user, isLoading: authLoading, isOwner } = useAuth();
