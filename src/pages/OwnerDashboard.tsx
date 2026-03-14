@@ -181,6 +181,7 @@ const OwnerDashboard = () => {
       setBillItems([{ service: "", amount: 0 }]);
       setBillNotes("");
       setSelectedCustomer(null);
+      fetchBills();
     } catch (error: any) {
       toast.error(error.message || "Failed to generate bill");
     } finally {
