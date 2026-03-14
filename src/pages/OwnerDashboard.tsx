@@ -87,11 +87,13 @@ const OwnerDashboard = () => {
   const navigate = useNavigate();
   const { user, isLoading: authLoading, isOwner } = useAuth();
   const [customers, setCustomers] = useState<Customer[]>([]);
+  const [bills, setBills] = useState<Bill[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
   const [billDialogOpen, setBillDialogOpen] = useState(false);
   const [billItems, setBillItems] = useState<BillItem[]>([{ service: "", amount: 0 }]);
   const [billNotes, setBillNotes] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
