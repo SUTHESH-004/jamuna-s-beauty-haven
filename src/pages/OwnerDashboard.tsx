@@ -408,6 +408,68 @@ const OwnerDashboard = () => {
             </Table>
           )}
         </div>
+
+        {/* Bills History */}
+        <div className="bg-card rounded-lg border border-border overflow-hidden mt-8">
+          <div className="p-6 border-b border-border">
+            <h2 className="font-serif text-xl font-bold text-foreground flex items-center gap-2">
+              <Receipt className="w-5 h-5 text-primary" />
+              Generated Bills
+            </h2>
+          </div>
+
+          {bills.length === 0 ? (
+            <div className="p-12 text-center text-muted-foreground">
+              <Receipt className="w-12 h-12 mx-auto mb-4 opacity-50" />
+              <p>No bills generated yet.</p>
+            </div>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Date</TableHead>
+                  <TableHead>Customer</TableHead>
+                  <TableHead>Services</TableHead>
+                  <TableHead>Notes</TableHead>
+                  <TableHead className="text-right">Total</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {bills.map((bill) => {
+                  const customer = customers.find(c => c.id === bill.customer_id);
+                  return (
+                    <TableRow key={bill.id}>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <Calendar className="w-4 h-4 text-muted-foreground" />
+                          {new Date(bill.bill_date).toLocaleDateString()}
+                        </div>
+                      </TableCell>
+                      <TableCell className="font-medium">
+                        {customer?.name || customer?.phone || "Unknown"}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex flex-wrap gap-1">
+                          {bill.items.map((item, i) => (
+                            <span key={i} className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-primary/10 text-primary">
+                              {item.service} — ₹{item.amount}
+                            </span>
+                          ))}
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-muted-foreground text-sm">
+                        {bill.notes || "—"}
+                      </TableCell>
+                      <TableCell className="text-right font-serif font-bold text-primary">
+                        ₹{Number(bill.total_amount).toLocaleString()}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          )}
+        </div>
       </main>
     </div>
   );
