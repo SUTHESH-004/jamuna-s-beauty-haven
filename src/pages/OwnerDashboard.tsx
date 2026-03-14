@@ -104,6 +104,7 @@ const OwnerDashboard = () => {
   useEffect(() => {
     if (isOwner) {
       fetchCustomers();
+      fetchBills();
     }
   }, [isOwner]);
 
@@ -120,6 +121,20 @@ const OwnerDashboard = () => {
       toast.error("Failed to fetch customers");
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const fetchBills = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("bills")
+        .select("*")
+        .order("bill_date", { ascending: false });
+
+      if (error) throw error;
+      setBills((data || []).map((b: any) => ({ ...b, items: b.items as BillItem[] })));
+    } catch (error: any) {
+      toast.error("Failed to fetch bills");
     }
   };
 
