@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import type { Json } from "@/integrations/supabase/types";
@@ -30,6 +30,17 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import jsPDF from "jspdf";
 import {
@@ -44,6 +55,7 @@ import {
   Pencil,
   Download,
   UserPlus,
+  Search,
 } from "lucide-react";
 
 const PREDEFINED_SERVICES = [
@@ -113,6 +125,9 @@ const OwnerDashboard = () => {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [isEditingCustomer, setIsEditingCustomer] = useState(false);
 
+  // Search/filter state
+  const [searchQuery, setSearchQuery] = useState("");
+
   useEffect(() => {
     if (!authLoading && (!user || !isOwner)) {
       navigate("/");
@@ -155,6 +170,19 @@ const OwnerDashboard = () => {
       toast.error("Failed to fetch bills");
     }
   };
+
+  // Filtered customers
+  const filteredCustomers = useMemo(() => {
+    if (!searchQuery.trim()) return customers;
+    const q = searchQuery.toLowerCase().trim();
+    return customers.filter((c) => {
+      const name = (c.name || "").toLowerCase();
+      const phone = c.phone.toLowerCase();
+      const email = (c.email || "").toLowerCase();
+      const date = new Date(c.created_at).toLocaleDateString().toLowerCase();
+      return name.includes(q) || phone.includes(q) || email.includes(q) || date.includes(q);
+    });
+  }, [customers, searchQuery]);
 
   // Add customer
   const handleAddCustomer = async () => {
@@ -202,6 +230,33 @@ const OwnerDashboard = () => {
       toast.error(error.message || "Failed to update customer");
     } finally {
       setIsEditingCustomer(false);
+    }
+  };
+
+  // Delete customer
+  const handleDeleteCustomer = async (customerId: string) => {
+    try {
+      // Delete associated bills first
+      await supabase.from("bills").delete().eq("customer_id", customerId);
+      const { error } = await supabase.from("customers").delete().eq("id", customerId);
+      if (error) throw error;
+      toast.success("Customer deleted!");
+      fetchCustomers();
+      fetchBills();
+    } catch (error: any) {
+      toast.error(error.message || "Failed to delete customer");
+    }
+  };
+
+  // Delete bill
+  const handleDeleteBill = async (billId: string) => {
+    try {
+      const { error } = await supabase.from("bills").delete().eq("id", billId);
+      if (error) throw error;
+      toast.success("Bill deleted!");
+      fetchBills();
+    } catch (error: any) {
+      toast.error(error.message || "Failed to delete bill");
     }
   };
 
@@ -262,7 +317,6 @@ const OwnerDashboard = () => {
     const customer = customers.find(c => c.id === bill.customer_id);
     const doc = new jsPDF();
 
-    // Header
     doc.setFontSize(22);
     doc.setFont("helvetica", "bold");
     doc.text("Sri's Beauty Parlour", 105, 20, { align: "center" });
@@ -271,12 +325,10 @@ const OwnerDashboard = () => {
     doc.setFont("helvetica", "normal");
     doc.text("Invoice / Bill", 105, 28, { align: "center" });
 
-    // Divider
     doc.setDrawColor(200, 150, 180);
     doc.setLineWidth(0.5);
     doc.line(20, 33, 190, 33);
 
-    // Bill info
     doc.setFontSize(11);
     doc.setFont("helvetica", "bold");
     doc.text("Customer:", 20, 42);
@@ -293,7 +345,6 @@ const OwnerDashboard = () => {
     doc.setFont("helvetica", "normal");
     doc.text(new Date(bill.bill_date).toLocaleDateString(), 150, 42);
 
-    // Table header
     let y = 65;
     doc.setFillColor(245, 230, 240);
     doc.rect(20, y - 6, 170, 10, "F");
@@ -303,7 +354,6 @@ const OwnerDashboard = () => {
     doc.text("Service", 35, y);
     doc.text("Amount (₹)", 160, y, { align: "right" });
 
-    // Table rows
     doc.setFont("helvetica", "normal");
     y += 10;
     bill.items.forEach((item, i) => {
@@ -313,7 +363,6 @@ const OwnerDashboard = () => {
       y += 8;
     });
 
-    // Total
     y += 4;
     doc.setDrawColor(200, 150, 180);
     doc.line(20, y - 4, 190, y - 4);
@@ -322,7 +371,6 @@ const OwnerDashboard = () => {
     doc.text("Total:", 120, y + 2);
     doc.text(`₹${Number(bill.total_amount).toLocaleString()}`, 160, y + 2, { align: "right" });
 
-    // Notes
     if (bill.notes) {
       y += 16;
       doc.setFontSize(10);
@@ -330,7 +378,6 @@ const OwnerDashboard = () => {
       doc.text(`Notes: ${bill.notes}`, 20, y);
     }
 
-    // Footer
     doc.setFontSize(9);
     doc.setFont("helvetica", "normal");
     doc.setTextColor(150);
@@ -371,7 +418,6 @@ const OwnerDashboard = () => {
               <span>{customers.length} Customers</span>
             </div>
 
-            {/* Add Customer Button */}
             <Dialog open={addCustomerOpen} onOpenChange={setAddCustomerOpen}>
               <DialogTrigger asChild>
                 <Button size="sm" className="gap-2">
@@ -437,17 +483,26 @@ const OwnerDashboard = () => {
       {/* Main Content */}
       <main className="container mx-auto px-6 py-8">
         <div className="bg-card rounded-lg border border-border overflow-hidden">
-          <div className="p-6 border-b border-border">
+          <div className="p-6 border-b border-border flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <h2 className="font-serif text-xl font-bold text-foreground flex items-center gap-2">
               <Users className="w-5 h-5 text-primary" />
               Registered Customers
             </h2>
+            <div className="relative w-full sm:w-80">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                placeholder="Search by name, phone, email or date..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-9"
+              />
+            </div>
           </div>
 
-          {customers.length === 0 ? (
+          {filteredCustomers.length === 0 ? (
             <div className="p-12 text-center text-muted-foreground">
               <Users className="w-12 h-12 mx-auto mb-4 opacity-50" />
-              <p>No customers yet. Add one above!</p>
+              <p>{searchQuery ? "No customers match your search." : "No customers yet. Add one above!"}</p>
             </div>
           ) : (
             <Table>
@@ -455,12 +510,13 @@ const OwnerDashboard = () => {
                 <TableRow>
                   <TableHead>Name</TableHead>
                   <TableHead>Phone</TableHead>
+                  <TableHead>Email</TableHead>
                   <TableHead>Joined</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {customers.map((customer) => (
+                {filteredCustomers.map((customer) => (
                   <TableRow key={customer.id}>
                     <TableCell className="font-medium">
                       <div className="flex items-center gap-2">
@@ -485,6 +541,9 @@ const OwnerDashboard = () => {
                         {customer.phone}
                       </div>
                     </TableCell>
+                    <TableCell className="text-muted-foreground">
+                      {customer.email || "—"}
+                    </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
                         <Calendar className="w-4 h-4 text-muted-foreground" />
@@ -492,126 +551,153 @@ const OwnerDashboard = () => {
                       </div>
                     </TableCell>
                     <TableCell className="text-right">
-                      <Dialog open={billDialogOpen && selectedCustomer?.id === customer.id} onOpenChange={(open) => {
-                        setBillDialogOpen(open);
-                        if (!open) {
-                          setSelectedCustomer(null);
-                          setBillItems([{ service: "", amount: 0 }]);
-                          setBillNotes("");
-                        }
-                      }}>
-                        <DialogTrigger asChild>
-                          <Button
-                            size="sm"
-                            onClick={() => setSelectedCustomer(customer)}
-                            className="gap-2"
-                          >
-                            <Receipt className="w-4 h-4" />
-                            Generate Bill
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent className="sm:max-w-lg">
-                          <DialogHeader>
-                            <DialogTitle className="font-serif">
-                              Generate Bill for {customer.name || customer.phone}
-                            </DialogTitle>
-                            <DialogDescription>Add services and amounts below.</DialogDescription>
-                          </DialogHeader>
+                      <div className="flex items-center justify-end gap-2">
+                        <Dialog open={billDialogOpen && selectedCustomer?.id === customer.id} onOpenChange={(open) => {
+                          setBillDialogOpen(open);
+                          if (!open) {
+                            setSelectedCustomer(null);
+                            setBillItems([{ service: "", amount: 0 }]);
+                            setBillNotes("");
+                          }
+                        }}>
+                          <DialogTrigger asChild>
+                            <Button
+                              size="sm"
+                              onClick={() => setSelectedCustomer(customer)}
+                              className="gap-2"
+                            >
+                              <Receipt className="w-4 h-4" />
+                              Generate Bill
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="sm:max-w-lg">
+                            <DialogHeader>
+                              <DialogTitle className="font-serif">
+                                Generate Bill for {customer.name || customer.phone}
+                              </DialogTitle>
+                              <DialogDescription>Add services and amounts below.</DialogDescription>
+                            </DialogHeader>
 
-                          <div className="space-y-6 py-4">
-                            <div className="space-y-4">
-                              <Label>Services</Label>
-                              {billItems.map((item, index) => (
-                                <div key={index} className="flex gap-2 items-start">
-                                  <div className="flex-1 space-y-1">
-                                    <Select
-                                      value={PREDEFINED_SERVICES.includes(item.service) ? item.service : item.service ? "Other" : ""}
-                                      onValueChange={(val) => {
-                                        if (val === "Other") {
-                                          handleBillItemChange(index, "service", "");
-                                        } else {
-                                          handleBillItemChange(index, "service", val);
-                                        }
-                                      }}
-                                    >
-                                      <SelectTrigger>
-                                        <SelectValue placeholder="Select service" />
-                                      </SelectTrigger>
-                                      <SelectContent>
-                                        {PREDEFINED_SERVICES.map((s) => (
-                                          <SelectItem key={s} value={s}>{s}</SelectItem>
-                                        ))}
-                                      </SelectContent>
-                                    </Select>
-                                    {!PREDEFINED_SERVICES.includes(item.service) && item.service !== "" && (
-                                      <Input
-                                        placeholder="Custom service name"
-                                        value={item.service}
-                                        onChange={(e) => handleBillItemChange(index, "service", e.target.value)}
-                                      />
-                                    )}
-                                    {!PREDEFINED_SERVICES.includes(item.service) && item.service === "" && (
-                                      <Input
-                                        placeholder="Enter custom service name"
-                                        onChange={(e) => handleBillItemChange(index, "service", e.target.value)}
-                                      />
+                            <div className="space-y-6 py-4">
+                              <div className="space-y-4">
+                                <Label>Services</Label>
+                                {billItems.map((item, index) => (
+                                  <div key={index} className="flex gap-2 items-start">
+                                    <div className="flex-1 space-y-1">
+                                      <Select
+                                        value={PREDEFINED_SERVICES.includes(item.service) ? item.service : item.service ? "Other" : ""}
+                                        onValueChange={(val) => {
+                                          if (val === "Other") {
+                                            handleBillItemChange(index, "service", "");
+                                          } else {
+                                            handleBillItemChange(index, "service", val);
+                                          }
+                                        }}
+                                      >
+                                        <SelectTrigger>
+                                          <SelectValue placeholder="Select service" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                          {PREDEFINED_SERVICES.map((s) => (
+                                            <SelectItem key={s} value={s}>{s}</SelectItem>
+                                          ))}
+                                        </SelectContent>
+                                      </Select>
+                                      {!PREDEFINED_SERVICES.includes(item.service) && item.service !== "" && (
+                                        <Input
+                                          placeholder="Custom service name"
+                                          value={item.service}
+                                          onChange={(e) => handleBillItemChange(index, "service", e.target.value)}
+                                        />
+                                      )}
+                                      {!PREDEFINED_SERVICES.includes(item.service) && item.service === "" && (
+                                        <Input
+                                          placeholder="Enter custom service name"
+                                          onChange={(e) => handleBillItemChange(index, "service", e.target.value)}
+                                        />
+                                      )}
+                                    </div>
+                                    <Input
+                                      type="number"
+                                      placeholder="₹ Amount"
+                                      value={item.amount || ""}
+                                      onChange={(e) => handleBillItemChange(index, "amount", parseFloat(e.target.value) || 0)}
+                                      className="w-28"
+                                    />
+                                    {billItems.length > 1 && (
+                                      <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        onClick={() => handleRemoveBillItem(index)}
+                                        className="mt-1"
+                                      >
+                                        <Trash2 className="w-4 h-4 text-destructive" />
+                                      </Button>
                                     )}
                                   </div>
-                                  <Input
-                                    type="number"
-                                    placeholder="₹ Amount"
-                                    value={item.amount || ""}
-                                    onChange={(e) => handleBillItemChange(index, "amount", parseFloat(e.target.value) || 0)}
-                                    className="w-28"
-                                  />
-                                  {billItems.length > 1 && (
-                                    <Button
-                                      variant="ghost"
-                                      size="icon"
-                                      onClick={() => handleRemoveBillItem(index)}
-                                      className="mt-1"
-                                    >
-                                      <Trash2 className="w-4 h-4 text-destructive" />
-                                    </Button>
-                                  )}
-                                </div>
-                              ))}
-                              <Button variant="outline" size="sm" onClick={handleAddBillItem} className="gap-2">
-                                <Plus className="w-4 h-4" />
-                                Add Service
+                                ))}
+                                <Button variant="outline" size="sm" onClick={handleAddBillItem} className="gap-2">
+                                  <Plus className="w-4 h-4" />
+                                  Add Service
+                                </Button>
+                              </div>
+
+                              <div className="space-y-2">
+                                <Label htmlFor="notes">Notes (Optional)</Label>
+                                <Textarea
+                                  id="notes"
+                                  placeholder="Any additional notes..."
+                                  value={billNotes}
+                                  onChange={(e) => setBillNotes(e.target.value)}
+                                />
+                              </div>
+
+                              <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
+                                <span className="font-medium">Total Amount</span>
+                                <span className="font-serif text-2xl font-bold text-primary">
+                                  ₹{calculateTotal().toLocaleString()}
+                                </span>
+                              </div>
+
+                              <Button onClick={handleGenerateBill} disabled={isSaving} className="w-full gap-2">
+                                {isSaving ? (
+                                  <Loader2 className="w-4 h-4 animate-spin" />
+                                ) : (
+                                  <>
+                                    <Receipt className="w-4 h-4" />
+                                    Generate Bill
+                                  </>
+                                )}
                               </Button>
                             </div>
+                          </DialogContent>
+                        </Dialog>
 
-                            <div className="space-y-2">
-                              <Label htmlFor="notes">Notes (Optional)</Label>
-                              <Textarea
-                                id="notes"
-                                placeholder="Any additional notes..."
-                                value={billNotes}
-                                onChange={(e) => setBillNotes(e.target.value)}
-                              />
-                            </div>
-
-                            <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
-                              <span className="font-medium">Total Amount</span>
-                              <span className="font-serif text-2xl font-bold text-primary">
-                                ₹{calculateTotal().toLocaleString()}
-                              </span>
-                            </div>
-
-                            <Button onClick={handleGenerateBill} disabled={isSaving} className="w-full gap-2">
-                              {isSaving ? (
-                                <Loader2 className="w-4 h-4 animate-spin" />
-                              ) : (
-                                <>
-                                  <Receipt className="w-4 h-4" />
-                                  Generate Bill
-                                </>
-                              )}
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive">
+                              <Trash2 className="w-4 h-4" />
                             </Button>
-                          </div>
-                        </DialogContent>
-                      </Dialog>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Delete Customer?</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                This will permanently delete {customer.name || customer.phone} and all their associated bills. This action cannot be undone.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction
+                                onClick={() => handleDeleteCustomer(customer.id)}
+                                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                              >
+                                Delete
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -643,7 +729,7 @@ const OwnerDashboard = () => {
                   <TableHead>Services</TableHead>
                   <TableHead>Notes</TableHead>
                   <TableHead className="text-right">Total</TableHead>
-                  <TableHead className="text-right">PDF</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -676,14 +762,40 @@ const OwnerDashboard = () => {
                         ₹{Number(bill.total_amount).toLocaleString()}
                       </TableCell>
                       <TableCell className="text-right">
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          onClick={() => handleDownloadBill(bill)}
-                          title="Download PDF"
-                        >
-                          <Download className="w-4 h-4" />
-                        </Button>
+                        <div className="flex items-center justify-end gap-1">
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            onClick={() => handleDownloadBill(bill)}
+                            title="Download PDF"
+                          >
+                            <Download className="w-4 h-4" />
+                          </Button>
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive">
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Delete Bill?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  This will permanently delete this bill. This action cannot be undone.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction
+                                  onClick={() => handleDeleteBill(bill.id)}
+                                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                >
+                                  Delete
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        </div>
                       </TableCell>
                     </TableRow>
                   );
