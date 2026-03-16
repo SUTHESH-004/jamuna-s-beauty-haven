@@ -23,7 +23,14 @@ const Header = () => {
     setMobileMenuOpen(false);
   };
 
-  const AuthSection = () => {
+  const navLinks = [
+    { label: "About Us", id: "about" },
+    { label: "Services", id: "services" },
+    { label: "Reviews", id: "testimonials" },
+    { label: "Contact", id: "contact" },
+  ];
+
+  const renderAuth = () => {
     if (isLoading) return null;
     if (user) {
       return (
@@ -57,13 +64,6 @@ const Header = () => {
     );
   };
 
-  const navLinks = [
-    { label: "About Us", id: "about" },
-    { label: "Services", id: "services" },
-    { label: "Reviews", id: "testimonials" },
-    { label: "Contact", id: "contact" },
-  ];
-
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-card/80 backdrop-blur-md border-b border-border">
       <div className="container mx-auto px-6 py-4 flex items-center justify-between">
@@ -82,12 +82,12 @@ const Header = () => {
               {link.label}
             </button>
           ))}
-          <AuthSection />
+          {renderAuth()}
         </nav>
 
         {/* Mobile: Auth + Hamburger */}
         <div className="flex md:hidden items-center gap-3">
-          <AuthSection />
+          {renderAuth()}
           <Button
             variant="ghost"
             size="icon"
