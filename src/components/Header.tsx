@@ -31,7 +31,6 @@ const Header = () => {
   ];
 
   const renderAuth = () => {
-    if (isLoading) return null;
     if (user) {
       return (
         <DropdownMenu>
