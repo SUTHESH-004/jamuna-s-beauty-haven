@@ -49,16 +49,8 @@ const HeroSection = () => {
                 className="w-20 h-20 object-contain"
               />
               <div>
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 border border-primary/20">
-                  <Sparkles className="w-3 h-3 text-primary" />
-                  <span className="text-[11px] font-semibold text-primary tracking-widest uppercase">Since 2009</span>
-                </div>
-                <div className="flex items-center gap-1 mt-1.5 ml-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-3 h-3 text-primary fill-primary" />
-                  ))}
-                  <span className="text-xs text-muted-foreground ml-1">2000+ clients</span>
-                </div>
+                <h2 className="font-serif text-lg font-bold text-foreground leading-tight">Sri's</h2>
+                <p className="text-sm font-medium text-primary tracking-wide">Beauty Parlour</p>
               </div>
             </div>
 
