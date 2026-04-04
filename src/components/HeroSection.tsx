@@ -41,16 +41,19 @@ const HeroSection = () => {
             <div className="absolute top-0 left-0 w-16 h-16 border-t-2 border-l-2 border-primary/40 rounded-tl-3xl" />
             <div className="absolute bottom-0 right-0 w-16 h-16 border-b-2 border-r-2 border-primary/40 rounded-br-3xl" />
 
-            {/* Logo + Badge row */}
-            <div className={`flex items-center gap-4 mb-6 transition-all duration-700 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-              <img
-                src={logo}
-                alt="Sri's Beauty Parlour Logo"
-                className="w-20 h-20 object-contain"
-              />
-              <div>
-                <h2 className="font-serif text-lg font-bold text-foreground leading-tight">Sri's</h2>
-                <p className="text-sm font-medium text-primary tracking-wide">Beauty Parlour</p>
+            {/* Logo + Brand */}
+            <div className={`flex items-center gap-5 mb-8 transition-all duration-700 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+              <div className="relative">
+                <div className="absolute -inset-2 bg-primary/10 rounded-full blur-xl" />
+                <img
+                  src={logo}
+                  alt="Sri's Beauty Parlour Logo"
+                  className="relative w-28 h-28 md:w-32 md:h-32 object-contain drop-shadow-lg"
+                />
+              </div>
+              <div className="border-l-2 border-primary/30 pl-5">
+                <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground leading-none tracking-tight">Sri's</h2>
+                <p className="text-base md:text-lg font-medium text-primary tracking-widest uppercase mt-1">Beauty Parlour</p>
               </div>
             </div>
 
