@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { MessageCircle, Mail, Sparkles, Star, Phone, ArrowRight } from "lucide-react";
-import logo from "@/assets/logo.png";
-import salonWoman from "@/assets/salon-woman.jpg";
+import logo from "@/assets/sris-logo-only.png";
+import srisNameMark from "@/assets/sris-name-mark.png";
+import heroBeautyIllustration from "@/assets/hero-beauty-illustration.png";
 import { useState, useEffect } from "react";
 
 const HeroSection = () => {
@@ -12,12 +13,12 @@ const HeroSection = () => {
   }, []);
 
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden">
+    <section id="hero" className="relative min-h-screen flex items-center overflow-hidden">
       {/* Full Background Image */}
       <div className="absolute inset-0">
         <img
-          src={salonWoman}
-          alt="Professional beautician at Sri's Beauty Parlour"
+          src={heroBeautyIllustration}
+          alt="Beauty artist in a pink salon holding skincare and makeup products"
           className="w-full h-full object-cover object-center"
           width={1920}
           height={1280}
@@ -42,23 +43,26 @@ const HeroSection = () => {
             <div className="absolute bottom-0 right-0 w-16 h-16 border-b-2 border-r-2 border-primary/40 rounded-br-3xl" />
 
             {/* Logo + Brand */}
-            <div className={`flex items-center gap-5 mb-8 transition-all duration-700 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-              <div className="relative">
+            <div className={`relative mb-5 h-[92px] md:h-[132px] overflow-visible transition-all duration-700 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+              <div className="absolute left-0 top-1/2 h-[70px] w-[210px] -translate-y-1/2 overflow-hidden pr-4 md:h-[102px] md:w-[360px]">
+                <img
+                  src={srisNameMark}
+                  alt="Sri's Beauty Parlour"
+                  className="h-full w-full scale-[1.42] object-cover object-[46%_52%] drop-shadow-sm"
+                />
+              </div>
+              <div className="absolute right-[8px] top-[4px] z-20 h-[92px] w-[92px] overflow-visible md:right-[-20px] md:top-[-2px] md:h-[150px] md:w-[150px]">
                 <div className="absolute -inset-2 bg-primary/10 rounded-full blur-xl" />
                 <img
                   src={logo}
                   alt="Sri's Beauty Parlour Logo"
-                  className="relative w-28 h-28 md:w-32 md:h-32 object-contain drop-shadow-lg"
+                  className="relative h-full w-full scale-[1.15] object-contain drop-shadow-lg"
                 />
-              </div>
-              <div className="border-l-2 border-primary/30 pl-5">
-                <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground leading-none tracking-tight">Sri's</h2>
-                <p className="text-base md:text-lg font-medium text-primary tracking-widest uppercase mt-1">Beauty Parlour</p>
               </div>
             </div>
 
             {/* Headline */}
-            <div className={`transition-all duration-700 delay-150 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+            <div className={`relative z-10 pr-14 md:pr-24 transition-all duration-700 delay-150 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
               <h1 className="font-serif text-4xl md:text-5xl lg:text-[3.5rem] font-bold text-foreground leading-[1.1] mb-2">
                 Your Beauty,
               </h1>
@@ -74,7 +78,7 @@ const HeroSection = () => {
 
             {/* Description */}
             <p className={`text-base text-muted-foreground leading-relaxed mb-7 transition-all duration-700 delay-300 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-              Expert bridal makeup, hair styling & skincare by <strong className="text-foreground">Jamuna</strong> — 
+              Expert bridal makeup, hair styling & skincare by <strong className="text-foreground">Jamuna</strong> —
               15+ years making every client feel beautiful and confident.
             </p>
 
@@ -82,7 +86,7 @@ const HeroSection = () => {
             <div className={`space-y-3 mb-6 transition-all duration-700 delay-400 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
               <Button size="lg" className="w-full gap-3 group hover:scale-[1.02] transition-all shadow-lg text-base py-6 rounded-xl" asChild>
                 <a
-                  href="https://wa.me/919876543210"
+                  href="https://wa.me/919790674312?text=Hi%20I%20want%20to%20book%20an%20appointment"
                   target="_blank"
                   rel="noopener noreferrer"
                 >

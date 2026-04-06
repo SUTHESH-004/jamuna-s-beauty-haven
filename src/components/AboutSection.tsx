@@ -1,4 +1,5 @@
-import husbandHero from "@/assets/husband-hero.jpg";
+import husbandHero from "@/assets/bca5f86a-3536-4750-ab47-19ccacd287fa.png";
+import jamunaHero from "@/assets/jamuna-portrait-new.png";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 const AboutSection = () => {
@@ -11,9 +12,9 @@ const AboutSection = () => {
       {/* Decorative background */}
       <div className="absolute top-20 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
       <div className="absolute bottom-20 left-0 w-96 h-96 bg-accent/20 rounded-full blur-3xl" />
-      
+
       <div className="container mx-auto px-6 relative">
-        <div 
+        <div
           ref={headerRef}
           className={`text-center mb-20 transition-all duration-700 ${headerVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
         >
@@ -25,14 +26,19 @@ const AboutSection = () => {
           </h2>
         </div>
 
-        <div 
+        <div
           ref={teamRef}
           className={`grid md:grid-cols-2 gap-16 items-center max-w-5xl mx-auto transition-all duration-700 delay-150 ${teamVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
         >
           {/* Jamuna */}
           <div className="text-center md:text-left group">
             <div className="w-48 h-48 mx-auto md:mx-0 rounded-full bg-primary/20 border-4 border-primary/30 mb-8 flex items-center justify-center overflow-hidden group-hover:scale-105 group-hover:border-primary/60 transition-all duration-500 group-hover:shadow-lg group-hover:shadow-primary/20">
-              <span className="font-serif text-6xl text-primary group-hover:scale-110 transition-transform duration-300">J</span>
+              <img
+                src={jamunaHero}
+                alt="Jamuna, lead beautician and founder"
+                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+              />
+              {/* <span className="font-serif text-6xl text-primary group-hover:scale-110 transition-transform duration-300">J</span> */}
             </div>
             <h3 className="font-serif text-3xl font-bold text-foreground mb-4 group-hover:text-primary transition-colors">
               Jamuna
@@ -41,9 +47,9 @@ const AboutSection = () => {
               Lead Beautician & Founder
             </p>
             <p className="text-muted-foreground leading-relaxed">
-              With over 15 years of experience in the beauty industry, Jamuna has 
-              transformed thousands of brides and clients into their most beautiful selves. 
-              Her expertise spans bridal makeup, hair styling, skincare treatments, 
+              With over 15 years of experience in the beauty industry, Jamuna has
+              transformed thousands of brides and clients into their most beautiful selves.
+              Her expertise spans bridal makeup, hair styling, skincare treatments,
               and mehndi artistry. She believes every woman deserves to feel beautiful.
             </p>
           </div>
@@ -64,16 +70,16 @@ const AboutSection = () => {
               Managing Partner & Financial Head
             </p>
             <p className="text-muted-foreground leading-relaxed">
-              The pillar of support behind every success. Rajesh handles all business 
-              operations, client relations, and ensures every appointment runs smoothly. 
-              His dedication to customer satisfaction and attention to detail makes 
+              The pillar of support behind every success. Rajesh handles all business
+              operations, client relations, and ensures every appointment runs smoothly.
+              His dedication to customer satisfaction and attention to detail makes
               the entire experience seamless for our valued clients.
             </p>
           </div>
         </div>
 
         {/* Partnership Quote */}
-        <div 
+        <div
           ref={quoteRef}
           className={`mt-24 max-w-3xl mx-auto text-center transition-all duration-700 ${quoteVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
         >

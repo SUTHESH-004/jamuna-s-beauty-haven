@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import AuthDialog from "@/components/auth/AuthDialog";
 import { User, LogOut, LayoutDashboard, Menu, X } from "lucide-react";
+import logo from "@/assets/sris-logo-only.png";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -66,8 +67,20 @@ const Header = () => {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-card/80 backdrop-blur-md border-b border-border">
       <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-        <div className="font-serif text-2xl font-bold text-primary">
-          Sri's Beauty Parlour
+        <div className="flex items-center gap-3">
+          <img
+            src={logo}
+            alt="Sri's Beauty Parlour Logo"
+            className="h-11 w-11 shrink-0 object-contain"
+          />
+          <div className="flex items-baseline gap-2 whitespace-nowrap leading-none">
+            <span className="font-serif text-[1.35rem] font-semibold italic tracking-[0.01em] text-primary">
+              Sri's
+            </span>
+            <span className="text-[11px] font-medium tracking-[0.3em] text-foreground/70 uppercase sm:text-xs">
+              Beauty Parlour
+            </span>
+          </div>
         </div>
 
         {/* Desktop Nav */}
