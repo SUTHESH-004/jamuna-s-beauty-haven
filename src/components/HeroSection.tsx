@@ -42,38 +42,41 @@ const HeroSection = () => {
             <div className="absolute top-0 left-0 w-16 h-16 border-t-2 border-l-2 border-primary/40 rounded-tl-3xl" />
             <div className="absolute bottom-0 right-0 w-16 h-16 border-b-2 border-r-2 border-primary/40 rounded-br-3xl" />
 
-            {/* Logo + Brand */}
-            <div className={`relative mb-5 h-[92px] md:h-[132px] overflow-visible transition-all duration-700 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-              <div className="absolute left-0 top-1/2 h-[70px] w-[210px] -translate-y-1/2 overflow-hidden pr-4 md:h-[102px] md:w-[360px]">
-                <img
-                  src={srisNameMark}
-                  alt="Sri's Beauty Parlour"
-                  className="h-full w-full scale-[1.42] object-cover object-[46%_52%] drop-shadow-sm"
-                />
+            {/* Logo + Brand + Headline row */}
+            <div className={`relative flex items-start gap-3 md:gap-5 mb-5 transition-all duration-700 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+              {/* Left: Name image + Headline */}
+              <div className="flex-1 min-w-0">
+                {/* Name mark */}
+                <div className="relative h-[60px] w-[180px] md:h-[90px] md:w-[300px] overflow-hidden mb-3">
+                  <img
+                    src={srisNameMark}
+                    alt="Sri's Beauty Parlour"
+                    className="h-full w-full scale-[1.42] object-cover object-[46%_52%] drop-shadow-sm"
+                  />
+                </div>
+                {/* Headline */}
+                <h1 className="font-serif text-4xl md:text-5xl lg:text-[3.5rem] font-bold text-foreground leading-[1.1] mb-2">
+                  Your Beauty,
+                </h1>
+                <h1 className="font-serif text-4xl md:text-5xl lg:text-[3.5rem] font-bold leading-[1.1]">
+                  <span className="text-primary relative inline-block">
+                    Our Passion
+                    <svg className="absolute -bottom-1 left-0 w-full" viewBox="0 0 200 8" fill="none">
+                      <path d="M2 6C50 2 150 2 198 6" stroke="hsl(var(--primary))" strokeWidth="2.5" strokeLinecap="round" strokeDasharray="200" strokeDashoffset="200" style={{ animation: isLoaded ? 'draw 1.2s ease-out 0.8s forwards' : 'none' }} />
+                    </svg>
+                  </span>
+                </h1>
               </div>
-              <div className="absolute right-[8px] top-[4px] z-20 h-[92px] w-[92px] overflow-visible md:right-[-20px] md:top-[-2px] md:h-[150px] md:w-[150px]">
-                <div className="absolute -inset-2 bg-primary/10 rounded-full blur-xl" />
+
+              {/* Right: Logo */}
+              <div className="relative flex-shrink-0 w-[110px] h-[110px] md:w-[140px] md:h-[140px] mt-2">
+                <div className="absolute -inset-3 bg-primary/10 rounded-full blur-xl" />
                 <img
                   src={logo}
                   alt="Sri's Beauty Parlour Logo"
                   className="relative h-full w-full scale-[1.15] object-contain drop-shadow-lg"
                 />
               </div>
-            </div>
-
-            {/* Headline */}
-            <div className={`relative z-10 pr-14 md:pr-24 transition-all duration-700 delay-150 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-              <h1 className="font-serif text-4xl md:text-5xl lg:text-[3.5rem] font-bold text-foreground leading-[1.1] mb-2">
-                Your Beauty,
-              </h1>
-              <h1 className="font-serif text-4xl md:text-5xl lg:text-[3.5rem] font-bold leading-[1.1] mb-5">
-                <span className="text-primary relative inline-block">
-                  Our Passion
-                  <svg className="absolute -bottom-1 left-0 w-full" viewBox="0 0 200 8" fill="none">
-                    <path d="M2 6C50 2 150 2 198 6" stroke="hsl(var(--primary))" strokeWidth="2.5" strokeLinecap="round" className="animate-[draw_1.5s_ease-out_0.8s_both]" strokeDasharray="200" strokeDashoffset="200" style={{ animation: isLoaded ? 'draw 1.2s ease-out 0.8s forwards' : 'none' }} />
-                  </svg>
-                </span>
-              </h1>
             </div>
 
             {/* Description */}
