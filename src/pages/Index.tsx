@@ -8,6 +8,7 @@ import MapSection from "@/components/MapSection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 import FloatingElements from "@/components/FloatingElements";
+import AnimatedSection from "@/components/AnimatedSection";
 
 const Index = () => {
   return (
@@ -15,12 +16,24 @@ const Index = () => {
       <FloatingElements />
       <Header />
       <HeroSection />
-      <StatsSection />
-      <ServicesGallery />
-      <TestimonialsSection />
-      <MapSection />
-      <AboutSection />
-      <ContactSection />
+      <AnimatedSection delay={0}>
+        <StatsSection />
+      </AnimatedSection>
+      <AnimatedSection delay={100} direction="up">
+        <ServicesGallery />
+      </AnimatedSection>
+      <AnimatedSection delay={0} direction="left">
+        <TestimonialsSection />
+      </AnimatedSection>
+      <AnimatedSection delay={100} direction="right">
+        <MapSection />
+      </AnimatedSection>
+      <AnimatedSection delay={0} direction="up">
+        <AboutSection />
+      </AnimatedSection>
+      <AnimatedSection delay={100} direction="up">
+        <ContactSection />
+      </AnimatedSection>
       <Footer />
     </div>
   );
