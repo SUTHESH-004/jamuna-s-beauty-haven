@@ -51,7 +51,7 @@ const HeroSection = () => {
                   <img
                     src={srisNameMark}
                     alt="Sri's Beauty Parlour"
-                    className="h-12 sm:h-14 md:h-[72px] w-auto object-contain drop-shadow-sm"
+                    className="h-16 sm:h-20 md:h-24 w-auto object-contain drop-shadow-sm"
                   />
                 </div>
                 {/* Headline */}
