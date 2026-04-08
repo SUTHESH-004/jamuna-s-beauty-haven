@@ -34,30 +34,27 @@ const HeroSection = () => {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 container mx-auto px-6 py-28 md:py-32">
+      <div className="relative z-10 container mx-auto px-4 sm:px-6 py-20 md:py-32">
         <div className="max-w-xl">
           {/* Glassmorphism card */}
-          <div className="relative backdrop-blur-md bg-background/40 border border-primary/10 rounded-3xl p-8 md:p-10 shadow-2xl">
+          <div className="relative backdrop-blur-md bg-background/40 border border-primary/10 rounded-2xl sm:rounded-3xl p-5 sm:p-8 md:p-10 shadow-2xl">
             {/* Decorative corner accents */}
-            <div className="absolute top-0 left-0 w-16 h-16 border-t-2 border-l-2 border-primary/40 rounded-tl-3xl" />
-            <div className="absolute bottom-0 right-0 w-16 h-16 border-b-2 border-r-2 border-primary/40 rounded-br-3xl" />
+            <div className="absolute top-0 left-0 w-12 h-12 sm:w-16 sm:h-16 border-t-2 border-l-2 border-primary/40 rounded-tl-2xl sm:rounded-tl-3xl" />
+            <div className="absolute bottom-0 right-0 w-12 h-12 sm:w-16 sm:h-16 border-b-2 border-r-2 border-primary/40 rounded-br-2xl sm:rounded-br-3xl" />
 
             {/* Logo + Brand */}
-            <div className={`relative mb-5 h-[92px] md:h-[132px] overflow-visible transition-all duration-700 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-              <div className="absolute left-0 top-1/2 h-[70px] w-[210px] -translate-y-1/2 overflow-hidden pr-4 md:h-[102px] md:w-[360px]">
-                <img
-                  src={srisNameMark}
-                  alt="Sri's Beauty Parlour"
-                  className="h-full w-full scale-[1.42] object-cover object-[46%_52%] drop-shadow-sm"
-                />
-              </div>
-              <div className="absolute right-[8px] top-[4px] z-20 h-[92px] w-[92px] overflow-visible md:right-[-20px] md:top-[-2px] md:h-[150px] md:w-[150px]">
+            <div className={`relative mb-4 sm:mb-5 flex items-center gap-3 sm:gap-4 transition-all duration-700 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+              <div className="relative shrink-0 w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24">
                 <div className="absolute -inset-2 bg-primary/10 rounded-full blur-xl" />
                 <img
                   src={logo}
                   alt="Sri's Beauty Parlour Logo"
-                  className="relative h-full w-full scale-[1.15] object-contain drop-shadow-lg"
+                  className="relative h-full w-full object-contain drop-shadow-lg"
                 />
+              </div>
+              <div className="min-w-0">
+                <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold text-foreground leading-tight">Sri's</h2>
+                <p className="text-xs sm:text-sm font-semibold tracking-[0.2em] uppercase text-primary">Beauty Parlour</p>
               </div>
             </div>
 
