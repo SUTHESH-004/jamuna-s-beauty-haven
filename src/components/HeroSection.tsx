@@ -59,15 +59,15 @@ const HeroSection = () => {
             </div>
 
             {/* Headline */}
-            <div className={`relative z-10 pr-14 md:pr-24 transition-all duration-700 delay-150 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-              <h1 className="font-serif text-4xl md:text-5xl lg:text-[3.5rem] font-bold text-foreground leading-[1.1] mb-2">
+            <div className={`relative z-10 transition-all duration-700 delay-150 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+              <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-bold text-foreground leading-[1.1] mb-1">
                 Your Beauty,
               </h1>
-              <h1 className="font-serif text-4xl md:text-5xl lg:text-[3.5rem] font-bold leading-[1.1] mb-5">
+              <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-bold leading-[1.1] mb-4 sm:mb-5">
                 <span className="text-primary relative inline-block">
                   Our Passion
                   <svg className="absolute -bottom-1 left-0 w-full" viewBox="0 0 200 8" fill="none">
-                    <path d="M2 6C50 2 150 2 198 6" stroke="hsl(var(--primary))" strokeWidth="2.5" strokeLinecap="round" className="animate-[draw_1.5s_ease-out_0.8s_both]" strokeDasharray="200" strokeDashoffset="200" style={{ animation: isLoaded ? 'draw 1.2s ease-out 0.8s forwards' : 'none' }} />
+                    <path d="M2 6C50 2 150 2 198 6" stroke="hsl(var(--primary))" strokeWidth="2.5" strokeLinecap="round" strokeDasharray="200" strokeDashoffset="200" style={{ animation: isLoaded ? 'draw 1.2s ease-out 0.8s forwards' : 'none' }} />
                   </svg>
                 </span>
               </h1>
