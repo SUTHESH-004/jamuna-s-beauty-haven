@@ -47,11 +47,11 @@ const HeroSection = () => {
               {/* Left: Name image + Headline */}
               <div className="flex-1 min-w-0">
                 {/* Name mark */}
-                <div className="mb-3">
+                <div className="relative h-[50px] w-[160px] sm:h-[65px] sm:w-[210px] md:h-[80px] md:w-[260px] overflow-hidden mb-3">
                   <img
                     src={srisNameMark}
                     alt="Sri's Beauty Parlour"
-                    className="h-16 sm:h-20 md:h-24 w-auto object-contain drop-shadow-sm"
+                    className="absolute h-[140%] w-[140%] -top-[22%] -left-[6%] object-cover drop-shadow-sm"
                   />
                 </div>
                 {/* Headline */}
