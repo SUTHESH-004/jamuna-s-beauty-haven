@@ -35,30 +35,30 @@ const HeroSection = () => {
 
       {/* Content */}
       <div className="relative z-10 container mx-auto px-6 py-28 md:py-32">
-        <div className="max-w-xl">
+        <div className="max-w-xl md:max-w-2xl">
           {/* Glassmorphism card */}
-          <div className="relative backdrop-blur-md bg-background/40 border border-primary/10 rounded-3xl p-8 md:p-10 shadow-2xl">
+          <div className="relative backdrop-blur-md bg-background/40 border border-primary/10 rounded-3xl p-6 sm:p-8 md:p-10 shadow-2xl">
             {/* Decorative corner accents */}
             <div className="absolute top-0 left-0 w-16 h-16 border-t-2 border-l-2 border-primary/40 rounded-tl-3xl" />
             <div className="absolute bottom-0 right-0 w-16 h-16 border-b-2 border-r-2 border-primary/40 rounded-br-3xl" />
 
             {/* Logo + Brand + Headline row */}
-            <div className={`relative flex items-start gap-3 md:gap-5 mb-5 transition-all duration-700 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+            <div className={`relative flex items-center gap-4 md:gap-6 mb-5 transition-all duration-700 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
               {/* Left: Name image + Headline */}
               <div className="flex-1 min-w-0">
                 {/* Name mark */}
-                <div className="relative h-[60px] w-[180px] md:h-[90px] md:w-[300px] overflow-hidden mb-3">
+                <div className="relative h-[50px] w-[160px] sm:h-[65px] sm:w-[210px] md:h-[80px] md:w-[260px] overflow-hidden mb-3">
                   <img
                     src={srisNameMark}
                     alt="Sri's Beauty Parlour"
-                    className="h-full w-full scale-[1.42] object-cover object-[46%_52%] drop-shadow-sm"
+                    className="absolute h-[140%] w-[140%] -top-[22%] -left-[6%] object-cover drop-shadow-sm"
                   />
                 </div>
                 {/* Headline */}
-                <h1 className="font-serif text-4xl md:text-5xl lg:text-[3.5rem] font-bold text-foreground leading-[1.1] mb-2">
+                <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-foreground leading-[1.1] mb-1">
                   Your Beauty,
                 </h1>
-                <h1 className="font-serif text-4xl md:text-5xl lg:text-[3.5rem] font-bold leading-[1.1]">
+                <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold leading-[1.1]">
                   <span className="text-primary relative inline-block">
                     Our Passion
                     <svg className="absolute -bottom-1 left-0 w-full" viewBox="0 0 200 8" fill="none">
@@ -69,12 +69,12 @@ const HeroSection = () => {
               </div>
 
               {/* Right: Logo */}
-              <div className="relative flex-shrink-0 w-[110px] h-[110px] md:w-[140px] md:h-[140px] mt-2">
+              <div className="relative flex-shrink-0 w-24 h-24 sm:w-28 sm:h-28 md:w-36 md:h-36">
                 <div className="absolute -inset-3 bg-primary/10 rounded-full blur-xl" />
                 <img
                   src={logo}
                   alt="Sri's Beauty Parlour Logo"
-                  className="relative h-full w-full scale-[1.15] object-contain drop-shadow-lg"
+                  className="relative h-full w-full object-contain drop-shadow-lg"
                 />
               </div>
             </div>
