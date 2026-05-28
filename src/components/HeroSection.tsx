@@ -7,15 +7,38 @@ import { useState, useEffect } from "react";
 
 const HeroSection = () => {
   const [isLoaded, setIsLoaded] = useState(false);
+  const [scrollY, setScrollY] = useState(0);
 
   useEffect(() => {
     setIsLoaded(true);
   }, []);
 
+  useEffect(() => {
+    let rafId = 0;
+    const handleScroll = () => {
+      if (rafId) return;
+      rafId = window.requestAnimationFrame(() => {
+        setScrollY(window.scrollY);
+        rafId = 0;
+      });
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (rafId) window.cancelAnimationFrame(rafId);
+    };
+  }, []);
+
   return (
     <section id="hero" className="relative min-h-screen flex items-center overflow-hidden">
       {/* Full Background Image */}
-      <div className="absolute inset-0">
+      <div
+        className="absolute inset-0 will-change-transform"
+        style={{
+          transform: `translate3d(0, ${scrollY * 0.4}px, 0) scale(${1 + scrollY * 0.0005})`,
+          transition: "transform 0.1s ease-out",
+        }}
+      >
         <img
           src={heroBeautyIllustration}
           alt="Beauty artist in a pink salon holding skincare and makeup products"
