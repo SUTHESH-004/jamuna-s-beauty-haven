@@ -11,7 +11,7 @@ const Footer = () => {
 
           <div className="flex items-center gap-6">
             <a
-              href="https://wa.me/919876543210"
+              href="https://wa.me/919790674312"
               target="_blank"
               rel="noopener noreferrer"
               className="text-muted-foreground hover:text-primary transition-colors"
@@ -20,7 +20,7 @@ const Footer = () => {
               <MessageCircle className="w-5 h-5" />
             </a>
             <a
-              href="mailto:jamuna.beauty@example.com"
+              href="mailto:srisparlour1223@gmail.com"
               className="text-muted-foreground hover:text-primary transition-colors"
               aria-label="Email"
             >
