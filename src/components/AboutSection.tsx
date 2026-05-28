@@ -16,7 +16,7 @@ const AboutSection = () => {
       <div className="container mx-auto px-6 relative">
         <div
           ref={headerRef}
-          className={`text-center mb-20 transition-all duration-700 ${headerVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+          className={`text-center mb-20 transition-all duration-700 ${headerVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
         >
           <p className="text-primary font-medium mb-4 tracking-widest uppercase">
             Meet the Team
@@ -28,7 +28,7 @@ const AboutSection = () => {
 
         <div
           ref={teamRef}
-          className={`grid md:grid-cols-2 gap-16 items-center max-w-5xl mx-auto transition-all duration-700 delay-150 ${teamVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+          className={`grid md:grid-cols-2 gap-16 items-center max-w-5xl mx-auto transition-all duration-700 delay-150 ${teamVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
         >
           {/* Jamuna */}
           <div className="text-center md:text-left group">
@@ -47,10 +47,11 @@ const AboutSection = () => {
               Lead Beautician & Founder
             </p>
             <p className="text-muted-foreground leading-relaxed">
-              With over 15 years of experience in the beauty industry, Jamuna has
-              transformed thousands of brides and clients into their most beautiful selves.
-              Her expertise spans bridal makeup, hair styling, skincare treatments,
-              and mehndi artistry. She believes every woman deserves to feel beautiful.
+              With over 15 years of experience in the beauty industry, Jamuna
+              has transformed thousands of brides and clients into their most
+              beautiful selves. Her expertise spans bridal makeup, hair styling,
+              skincare treatments, and mehndi artistry. She believes every woman
+              deserves to feel beautiful.
             </p>
           </div>
 
@@ -64,16 +65,17 @@ const AboutSection = () => {
               />
             </div>
             <h3 className="font-serif text-3xl font-bold text-foreground mb-4 group-hover:text-secondary transition-colors">
-              Rajesh
+              Vignesh Alaguvel
             </h3>
             <p className="text-secondary font-medium mb-4">
               Managing Partner & Financial Head
             </p>
             <p className="text-muted-foreground leading-relaxed">
-              The pillar of support behind every success. Rajesh handles all business
-              operations, client relations, and ensures every appointment runs smoothly.
-              His dedication to customer satisfaction and attention to detail makes
-              the entire experience seamless for our valued clients.
+              The pillar of support behind every success. Rajesh handles all
+              business operations, client relations, and ensures every
+              appointment runs smoothly. His dedication to customer satisfaction
+              and attention to detail makes the entire experience seamless for
+              our valued clients.
             </p>
           </div>
         </div>
@@ -81,12 +83,16 @@ const AboutSection = () => {
         {/* Partnership Quote */}
         <div
           ref={quoteRef}
-          className={`mt-24 max-w-3xl mx-auto text-center transition-all duration-700 ${quoteVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
+          className={`mt-24 max-w-3xl mx-auto text-center transition-all duration-700 ${quoteVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"}`}
         >
           <blockquote className="font-serif text-2xl md:text-3xl text-foreground italic relative">
-            <span className="absolute -top-6 -left-4 text-6xl text-primary/20">"</span>
+            <span className="absolute -top-6 -left-4 text-6xl text-primary/20">
+              "
+            </span>
             Together, we bring beauty and business excellence under one roof
-            <span className="absolute -bottom-8 -right-4 text-6xl text-primary/20">"</span>
+            <span className="absolute -bottom-8 -right-4 text-6xl text-primary/20">
+              "
+            </span>
           </blockquote>
           <p className="mt-10 text-muted-foreground">
             — A partnership built on love, trust, and shared dreams
