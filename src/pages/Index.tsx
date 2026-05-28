@@ -9,6 +9,7 @@ import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 import FloatingElements from "@/components/FloatingElements";
 import AnimatedSection from "@/components/AnimatedSection";
+import SignInPrompt from "@/components/SignInPrompt";
 
 const Index = () => {
   return (
@@ -35,6 +36,7 @@ const Index = () => {
         <ContactSection />
       </AnimatedSection>
       <Footer />
+      <SignInPrompt />
     </div>
   );
 };
