@@ -7,14 +7,14 @@ const contactMethods = [
     icon: MessageCircle,
     title: "WhatsApp",
     description: "Quick responses, easy booking",
-    href: "https://wa.me/919876543210",
+    href: "https://wa.me/919790674312",
     external: true,
   },
   {
     icon: Mail,
     title: "Email Us",
     description: "For detailed inquiries",
-    href: "mailto:jamuna.beauty@example.com",
+    href: "mailto:srisparlour1223@gmail.com",
     external: false,
   },
   {
@@ -127,13 +127,13 @@ const ContactSection = () => {
             <div className="p-2 rounded-full bg-primary/10 group-hover:bg-primary/20 transition-colors">
               <MapPin className="w-5 h-5 text-primary" />
             </div>
-            <span>123 Beauty Lane, City Center, State - 123456</span>
+            <span>22/7, Kumaran Hardware Building, Near Muthoot Finance, Kinathukadavu, Tamil Nadu 642109</span>
           </div>
           <div className="flex items-center justify-center gap-3 text-muted-foreground group cursor-pointer hover:text-foreground transition-colors">
             <div className="p-2 rounded-full bg-primary/10 group-hover:bg-primary/20 transition-colors">
               <Phone className="w-5 h-5 text-primary" />
             </div>
-            <span>+91 98765 43210</span>
+            <span>+91 97906 74312 &nbsp;|&nbsp; +91 79049 07252</span>
           </div>
         </div>
       </div>

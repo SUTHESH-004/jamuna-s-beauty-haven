@@ -123,13 +123,13 @@ const HeroSection = () => {
               </Button>
               <div className="grid grid-cols-2 gap-3">
                 <Button variant="outline" size="lg" className="gap-2 group hover:scale-[1.02] transition-all bg-background/50 py-5 rounded-xl" asChild>
-                  <a href="mailto:jamuna.beauty@example.com">
+                  <a href="mailto:srisparlour1223@gmail.com">
                     <Mail className="w-4 h-4" />
                     Email Us
                   </a>
                 </Button>
                 <Button variant="outline" size="lg" className="gap-2 group hover:scale-[1.02] transition-all bg-background/50 py-5 rounded-xl" asChild>
-                  <a href="tel:+919876543210">
+                  <a href="tel:+919790674312">
                     <Phone className="w-4 h-4" />
                     Call Now
                   </a>

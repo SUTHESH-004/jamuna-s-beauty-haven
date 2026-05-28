@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 
 // Placeholder coordinates for Sri's Beauty Parlour
 // Replace with actual address coordinates
-const PARLOUR_ADDRESS = "123 Beauty Lane, City Center, State - 123456";
+const PARLOUR_ADDRESS = "22/7, Kumaran Hardware Building, Near Muthoot Finance, Kinathukadavu, Tamil Nadu 642109";
 const GOOGLE_MAPS_LINK = "https://maps.app.goo.gl/hxmVmzZqxWqusji29";
 const EMBED_URL = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d5332.705327075159!2d77.01540020586583!3d10.823013431728663!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba84ff6c8311a9f%3A0x43a49c6c657af5ed!2sSris%20parlour!5e0!3m2!1sen!2sin!4v1775473253028!5m2!1sen!2sin";
 
